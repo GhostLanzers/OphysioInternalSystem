@@ -2,11 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Shield, Stethoscope, Heart } from 'lucide-react';
 
-interface RoleSelectionProps {
-  onRoleSelect: (role: 'admin' | 'doctor') => void;
-}
-
-const RoleSelection: React.FC<RoleSelectionProps> = ({ onRoleSelect }) => {
+const RoleSelection = ({ onRoleSelect }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 dark:from-darkBlue-950 dark:via-darkBlue-900 dark:to-black flex items-center justify-center p-4">
       <motion.div
@@ -23,7 +19,7 @@ const RoleSelection: React.FC<RoleSelectionProps> = ({ onRoleSelect }) => {
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 400 }}
             >
-              <Heart className="w-8 h-8 text-white" />
+              <img src="/OphysioHD_logo.png" alt="Ophysio Logo"/>
             </motion.div>
             <h1 className="text-2xl font-display font-bold text-white mb-2">
               OPHYSIO Internal System

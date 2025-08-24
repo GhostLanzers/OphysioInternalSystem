@@ -3,12 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Eye, EyeOff, Mail, Lock, Shield, Stethoscope, Heart } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
-interface LoginFormProps {
-  role: 'admin' | 'doctor';
-  onBack: () => void;
-}
-
-const LoginForm: React.FC<LoginFormProps> = ({ role, onBack }) => {
+const LoginForm = ({ role, onBack }) => {
   const { login, isLoading } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
@@ -17,7 +12,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ role, onBack }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -32,7 +27,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ role, onBack }) => {
     }
   };
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     if (error) setError('');
   };
@@ -79,6 +74,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ role, onBack }) => {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               className="absolute left-4 top-1/2 transform -translate-y-1/2 p-2 rounded-lg bg-white/20 text-white hover:bg-white/30 transition-colors"
+              aria-label="Go back"
             >
               <ArrowLeft className="w-5 h-5" />
             </motion.button>
@@ -137,6 +133,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ role, onBack }) => {
                     className="w-full pl-10 pr-4 py-3 rounded-xl bg-gray-50 dark:bg-darkBlue-800 border border-gray-300 dark:border-darkBlue-600 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white font-sans"
                     placeholder="Enter your email"
                     required
+                    autoComplete="email"
                   />
                 </div>
               </div>
@@ -154,11 +151,13 @@ const LoginForm: React.FC<LoginFormProps> = ({ role, onBack }) => {
                     className="w-full pl-10 pr-12 py-3 rounded-xl bg-gray-50 dark:bg-darkBlue-800 border border-gray-300 dark:border-darkBlue-600 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 text-gray-900 dark:text-white font-sans"
                     placeholder="Enter your password"
                     required
+                    autoComplete="current-password"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-darkBlue-400 hover:text-gray-600 dark:hover:text-darkBlue-200 transition-colors"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
@@ -196,7 +195,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ role, onBack }) => {
           className="text-center mt-6"
         >
           <div className="flex items-center justify-center space-x-2">
-            <Heart className="w-5 h-5 text-primary-500" />
+            <img className="w-5 h-5 text-primary-500" src="/OphysioHD_logo.png" alt="Ophysio Logo"/>
             <span className="text-lg font-display font-bold text-gray-700 dark:text-darkBlue-300">
               OPHYSIO
             </span>

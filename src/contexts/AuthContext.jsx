@@ -1,42 +1,33 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { User, AuthState, LoginCredentials } from '../types/auth';
 
-interface AuthContextType extends AuthState {
-  login: (credentials: LoginCredentials) => Promise<boolean>;
-  logout: () => void;
-}
+const AuthContext = createContext();
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-// Mock user data - in real app, this would come from your backend
+// Mock user data for demo purposes
 const mockUsers = {
   admin: {
     id: '1',
     email: 'admin@ophysio.com',
     password: 'admin123',
     name: 'Dr. Rajesh Kumar',
-    role: 'admin' as const,
-    avatar: 'https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop'
+    role: 'admin',
   },
   doctor: {
     id: '2',
     email: 'doctor@ophysio.com',
     password: 'doctor123',
     name: 'Dr. Sarah Chandrashekhar',
-    role: 'doctor' as const,
-    avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop'
+    role: 'doctor',
   }
 };
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [authState, setAuthState] = useState<AuthState>({
+export const AuthProvider = ({ children }) => {
+  const [authState, setAuthState] = useState({
     user: null,
     isAuthenticated: false,
     isLoading: true
   });
 
   useEffect(() => {
-    // Check for stored auth data on app load
     const storedUser = localStorage.getItem('ophysio_user');
     if (storedUser) {
       try {
@@ -47,6 +38,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           isLoading: false
         });
       } catch (error) {
+        console.error('Error parsing stored user data:', error);
         localStorage.removeItem('ophysio_user');
         setAuthState(prev => ({ ...prev, isLoading: false }));
       }
@@ -55,21 +47,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  const login = async (credentials: LoginCredentials): Promise<boolean> => {
+  const login = async (credentials) => {
     setAuthState(prev => ({ ...prev, isLoading: true }));
 
-    // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     const mockUser = mockUsers[credentials.role];
     
     if (mockUser.email === credentials.email && mockUser.password === credentials.password) {
-      const user: User = {
+      const user = {
         id: mockUser.id,
         email: mockUser.email,
         name: mockUser.name,
-        role: mockUser.role,
-        avatar: mockUser.avatar
+        role: mockUser.role
       };
 
       localStorage.setItem('ophysio_user', JSON.stringify(user));

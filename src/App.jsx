@@ -5,9 +5,9 @@ import LoginForm from './components/auth/LoginForm';
 import AdminDashboard from './components/dashboard/AdminDashboard';
 import DoctorDashboard from './components/dashboard/DoctorDashboard';
 
-const AppContent: React.FC = () => {
+const AppContent = () => {
   const { isAuthenticated, user, isLoading } = useAuth();
-  const [selectedRole, setSelectedRole] = useState<'admin' | 'doctor' | null>(null);
+  const [selectedRole, setSelectedRole] = useState(null);
 
   if (isLoading) {
     return (
@@ -36,7 +36,7 @@ const AppContent: React.FC = () => {
   return <RoleSelection onRoleSelect={setSelectedRole} />;
 };
 
-function App() {
+const App = () => {
   return (
     <AuthProvider>
       <div className="min-h-screen bg-white dark:bg-darkBlue-950 transition-colors duration-300 overflow-x-hidden w-full max-w-full">
@@ -44,6 +44,6 @@ function App() {
       </div>
     </AuthProvider>
   );
-}
+};
 
 export default App;

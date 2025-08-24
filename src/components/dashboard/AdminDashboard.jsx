@@ -2,9 +2,20 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Users, Calendar, TrendingUp, Activity, Settings, LogOut } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import ManageDoctors from '../doctors/ManageDoctors';
+import ViewAppointments from '../appointments/ViewAppointments';
 
-const AdminDashboard: React.FC = () => {
+const AdminDashboard = () => {
   const { user, logout } = useAuth();
+  const [currentView, setCurrentView] = React.useState('dashboard');
+
+  if (currentView === 'manage-doctors') {
+    return <ManageDoctors onBack={() => setCurrentView('dashboard')} />;
+  }
+
+  if (currentView === 'view-appointments') {
+    return <ViewAppointments onBack={() => setCurrentView('dashboard')} />;
+  }
 
   const stats = [
     {
@@ -37,6 +48,25 @@ const AdminDashboard: React.FC = () => {
     }
   ];
 
+  const quickActions = [
+    { 
+      title: 'Manage Doctors', 
+      desc: 'Add, edit, or remove doctor profiles', 
+      icon: Users, 
+      action: () => setCurrentView('manage-doctors') 
+    },
+    { 
+      title: 'View Appointments', 
+      desc: 'Check today\'s appointment schedule', 
+      icon: Calendar, 
+      action: () => setCurrentView('view-appointments') 
+    },
+    { 
+      title: 'System Settings', 
+      desc: 'Configure system preferences', 
+      icon: Settings 
+    }
+  ];
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 dark:from-darkBlue-950 dark:via-darkBlue-900 dark:to-black">
       {/* Header */}
@@ -59,11 +89,11 @@ const AdminDashboard: React.FC = () => {
 
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-3">
-                <img
-                  src={user?.avatar}
-                  alt={user?.name}
-                  className="w-8 h-8 rounded-full border-2 border-primary-200 dark:border-primary-800"
-                />
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center border-2 border-primary-200 dark:border-primary-800">
+                  <span className="text-white font-display font-bold text-sm">
+                    {user?.name?.split(' ').map(n => n[0]).join('') || 'A'}
+                  </span>
+                </div>
                 <div className="hidden sm:block">
                   <p className="text-sm font-display font-medium text-gray-900 dark:text-white">
                     {user?.name}
@@ -79,6 +109,7 @@ const AdminDashboard: React.FC = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="p-2 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors"
+                aria-label="Logout"
               >
                 <LogOut className="w-5 h-5" />
               </motion.button>
@@ -143,13 +174,10 @@ const AdminDashboard: React.FC = () => {
             Quick Actions
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[
-              { title: 'Manage Doctors', desc: 'Add, edit, or remove doctor profiles', icon: Users },
-              { title: 'View Appointments', desc: 'Check today\'s appointment schedule', icon: Calendar },
-              { title: 'System Settings', desc: 'Configure system preferences', icon: Settings }
-            ].map((action, index) => (
+            {quickActions.map((action, index) => (
               <motion.button
                 key={action.title}
+                onClick={action.action}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="p-4 bg-gradient-to-br from-gray-50 to-white dark:from-darkBlue-800 dark:to-darkBlue-700 rounded-xl border border-gray-200 dark:border-darkBlue-600 hover:border-primary-300 dark:hover:border-primary-600 transition-all duration-200 text-left"

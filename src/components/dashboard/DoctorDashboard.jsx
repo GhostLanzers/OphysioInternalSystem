@@ -2,9 +2,20 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, Users, Clock, FileText, Stethoscope, LogOut } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import ViewPatientRecords from '../patients/ViewPatientRecords';
+import EditPatientRecords from '../patients/EditPatientRecords';
 
-const DoctorDashboard: React.FC = () => {
+const DoctorDashboard = () => {
   const { user, logout } = useAuth();
+  const [currentView, setCurrentView] = React.useState('dashboard');
+
+  if (currentView === 'view-patients') {
+    return <ViewPatientRecords onBack={() => setCurrentView('dashboard')} />;
+  }
+
+  if (currentView === 'edit-patients') {
+    return <EditPatientRecords onBack={() => setCurrentView('dashboard')} />;
+  }
 
   const todayStats = [
     {
@@ -40,6 +51,20 @@ const DoctorDashboard: React.FC = () => {
     { time: '4:00 PM', patient: 'Emma Davis', type: 'General Consultation' }
   ];
 
+  const quickActions = [
+    { 
+      title: 'View Patient Records', 
+      desc: 'Access patient history and treatment plans', 
+      icon: Users, 
+      action: () => setCurrentView('view-patients') 
+    },
+    { 
+      title: 'Edit Patient Records', 
+      desc: 'Update patient information and medical records', 
+      icon: FileText, 
+      action: () => setCurrentView('edit-patients') 
+    }
+  ];
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 dark:from-darkBlue-950 dark:via-darkBlue-900 dark:to-black">
       {/* Header */}
@@ -62,11 +87,11 @@ const DoctorDashboard: React.FC = () => {
 
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-3">
-                <img
-                  src={user?.avatar}
-                  alt={user?.name}
-                  className="w-8 h-8 rounded-full border-2 border-green-200 dark:border-green-800"
-                />
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center border-2 border-green-200 dark:border-green-800">
+                  <span className="text-white font-display font-bold text-sm">
+                    {user?.name?.split(' ').map(n => n[0]).join('') || 'D'}
+                  </span>
+                </div>
                 <div className="hidden sm:block">
                   <p className="text-sm font-display font-medium text-gray-900 dark:text-white">
                     {user?.name}
@@ -82,6 +107,7 @@ const DoctorDashboard: React.FC = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="p-2 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors"
+                aria-label="Logout"
               >
                 <LogOut className="w-5 h-5" />
               </motion.button>
@@ -182,14 +208,10 @@ const DoctorDashboard: React.FC = () => {
               Quick Actions
             </h3>
             <div className="space-y-4">
-              {[
-                { title: 'View Patient Records', desc: 'Access patient history and treatment plans', icon: Users },
-                { title: 'Create Treatment Report', desc: 'Document today\'s session outcomes', icon: FileText },
-                { title: 'Schedule Follow-up', desc: 'Book next appointment for patients', icon: Calendar },
-                { title: 'Update Availability', desc: 'Modify your schedule and time slots', icon: Clock }
-              ].map((action, index) => (
+              {quickActions.map((action, index) => (
                 <motion.button
                   key={action.title}
+                  onClick={action.action}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className="w-full p-4 bg-gradient-to-br from-gray-50 to-white dark:from-darkBlue-800 dark:to-darkBlue-700 rounded-xl border border-gray-200 dark:border-darkBlue-600 hover:border-green-300 dark:hover:border-green-600 transition-all duration-200 text-left"
